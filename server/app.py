@@ -21,7 +21,7 @@ def index():
 
 @app.route('/games')
 def games():
-
+  
     games = []
     for game in Game.query.all():
         game_dict = {
@@ -30,17 +30,52 @@ def games():
             "platform": game.platform,
             "price": game.price,
         }
-        games.append(game_dict)
-
+        games.append(game_dict)  
+         
     response = make_response   (
         jsonify(games),
         200
     ) 
 
+    response.headers["Content-Type"] = "application/json"
+
     return response
 
-# games_by_title = Game.query.order_by(Game.title).all()
+
+@app.route('/games/<int:id>')
+def game_by_id(id):
+    game = Game.query.filter_by(id=id).first()
+
+    game_dict = game.to_dict()
+
+    response = make_response(
+        jsonify(game_dict),
+        200
+    )
+    response.headers["Content-Type"] = "application/json"
+
+    return response
+
+# @app.route('/games/<int:id>')
+# def game_by_id(id):
+#     game = Game.query.filter_by(id=id).first()
+
+#     game_dict = {
+#         "title": game.title,
+#         "genre": game.genre,
+#         "platform": game.platform,
+#         "price": game.price,
+#     }
+
+#     response = make_response(
+#         jsonify(game_dict),
+#         200
+#     )
+#     response.headers["Content-Type"] = "application/json"
+
+#     return response
+
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
-
+    app.run(port=5555)
+    
